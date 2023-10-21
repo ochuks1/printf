@@ -82,6 +82,25 @@ int _printf(const char *format, ...)
                         write(1, &buffer[--count], 1);
                         printed_chars++;
                     }
+
+		     else if (*format == 'b')
+            {
+                unsigned int num = va_arg(args, unsigned int);
+                char binary[32]; // Maximum bits for a 32-bit integer
+                int i = 0;
+
+                while (i < 32)
+                {
+                    binary[i] = (num & 1) + '0';
+                    num >>= 1;
+                    i++;
+                }
+
+                while (i > 0)
+                {
+                    write(1, &binary[--i], 1);
+                    printed_chars++;
+		}
                 }
             }
         }
