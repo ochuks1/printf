@@ -1,27 +1,35 @@
 #include "main.h"
 
 /**
- * print_hex - Print a character in hexadecimal format
- * @c: Character to print in hexadecimal
+ * get_print_func - Get the appropriate print function for a format specifier
+ * @c: Format specifier
  *
- * Return: Number of characters printed
+ * Return: Pointer to the print function, or NULL if not found
  */
-int print_hex(char c)
+int (*get_print_func(char c))(va_list)
 {
-    /* Implement the logic to print a character in hexadecimal format */
-    return 0;  /* Update this to return the actual count */
+    switch (c)
+    {
+    case 'c':
+        return print_char;
+    case 's':
+        return print_string;
+    case 'd':
+    case 'i':
+        return print_integer;
+    case 'b':
+        return print_binary;
+    case 'u':
+        return print_unsigned;
+    case 'o':
+        return print_octal;
+    case 'x':
+        return print_hex;
+    case 'X':
+        return print_hex;
+    case 'S':
+        return print_str_non_printable;
+    default:
+        return NULL;
+    }
 }
-
-/**
- * print_base - Print an integer in a specified base
- * @n: Integer to print
- * @base: Base for conversion (e.g., 2 for binary, 8 for octal, 16 for hex)
- *
- * Return: Number of characters printed
- */
-int print_base(int n, int base)
-{
-    /* Implement the logic to convert and print the integer in the specified base */
-    return 0;  /* Update this to return the actual count */
-}
-/* Implement other utility functions */
