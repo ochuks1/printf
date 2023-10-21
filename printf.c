@@ -1,115 +1,158 @@
-#include <stdarg.h>
-#include <unistd.h>
-#include <stdio.h>
 #include "main.h"
+#include <stdio.h>
+#include <unistd.h>
+#include <stdarg.h>
+#include <stdlib.h>
 
+/**
+ * print_number - Helper function to print integers
+ * @n: Integer to print
+ * @count: Pointer to the count of printed characters
+ */
+void print_number(int n, int *count)
+{
+    if (n < 0)
+    {
+        write(1, "-", 1);
+        n = -n;
+        (*count)++;
+    }
+
+    if (n / 10 != 0)
+        print_number(n / 10, count);
+
+    char c = (n % 10) + '0';
+    write(1, &c, 1);
+    (*count)++;
+}
+
+/**
+ * print_binary - Helper function to print binary numbers
+ * @num: Binary number to print
+ * @count: Pointer to the count of printed characters
+ */
+void print_binary(unsigned int num, int *count)
+{
+    if (num / 2 != 0)
+        print_binary(num / 2, count);
+
+    char c = (num % 2) + '0';
+    write(1, &c, 1);
+    (*count)++;
+}
+
+/**
+ * _printf - Our custom printf function
+ * @format: The format string
+ *
+ * Return: The number of characters printed.
+ */
 int _printf(const char *format, ...)
 {
     int printed_chars = 0;
     va_list args;
 
-    /* Implement handling of %c, %s, and %% here */
-
     va_start(args, format);
 
-    /* Loop through the format string and handle conversions */
     while (*format)
     {
         if (*format == '%')
         {
-            format++; /* Move to the next character */
-            if (*format == '\0') /* Handle format string ending with '%' */
+            format++;
+            if (*format == '\0')
                 break;
-            if (*format == 'c')
+
+            if (*format == 'd' || *format == 'i')
             {
-                /* Handle %c */
-                char c = va_arg(args, int);
-                /* Print the character c here */
-                /* Increment printed_chars accordingly */
+                int num = va_arg(args, int);
+                print_number(num, &printed_chars);
             }
-            else if (*format == 's')
+            else if (*format == 'b')
             {
-                /* Handle %s */
-                char *str = va_arg(args, char *);
-                if (str == NULL)
+                unsigned int num = va_arg(args, unsigned int);
+                print_binary(num, &printed_chars);
+            }
+            else if (*format == 'u')
+            {
+                unsigned int num = va_arg(args, unsigned int);
+                print_number(num, &printed_chars);
+            }
+            else if (*format == 'o')
+            {
+                unsigned int num = va_arg(args, unsigned int);
+                int count = 0;
+                unsigned int temp = num;
+
+                while (temp > 0)
                 {
-                    /* Handle NULL string */
-                    /* Print (null) and increment printed_chars */
+                    temp = temp / 8;
+                    count++;
                 }
-                else
+
+                char *octal = malloc(count);
+                if (octal == NULL)
+                    return -1;
+
+                octal[count] = '\0';
+                count--;
+
+                while (num > 0)
                 {
-                    /* Print the string str and increment printed_chars */
+                    octal[count] = (num % 8) + '0';
+                    num = num / 8;
+                    count--;
                 }
+
+                write(1, octal, count + 1);
+                printed_chars += count + 1;
+                free(octal);
             }
-            else if (*format == '%')
+            else if (*format == 'x' || *format == 'X')
             {
-                /* Handle %% */
-                /* Print % and increment printed_chars */
+                unsigned int num = va_arg(args, unsigned int);
+                int count = 0;
+                unsigned int temp = num;
+
+                while (temp > 0)
+                {
+                    temp = temp / 16;
+                    count++;
+                }
+
+                char *hex = malloc(count);
+                if (hex == NULL)
+                    return -1;
+
+                hex[count] = '\0';
+                count--;
+
+                while (num > 0)
+                {
+                    int rem = num % 16;
+                    if (rem < 10)
+                        hex[count] = rem + '0';
+                    else
+                        hex[count] = (rem - 10) + ((*format == 'x') ? 'a' : 'A');
+                    num = num / 16;
+                   count--;
+                }
+
+                write(1, hex, count + 1);
+                printed_chars += count + 1;
+                free(hex);
             }
-            /* Handle other conversion specifiers as needed */
+            /* Continue with similar code blocks for others */
         }
         else
         {
-            /* Handle regular characters */
-            /* Print the character and increment printed_chars */
+            write(1, format, 1);
+            printed_chars++;
         }
-        format++; /* Move to the next character in the format string */
+        format++;
     }
-    else if (*format == 'b')
-{
-    /* Handle %b */
-    unsigned int num = va_arg(args, unsigned int);
-    /* Convert num to binary and print it */
-    /* Increment printed_chars accordingly */
-}
-else if (*format == 'u')
-{
-    /* Handle %u */
-    unsigned int num = va_arg(args, unsigned int);
-    /* Print the unsigned integer num and increment printed_chars */
-}
-else if (*format == 'o')
-{
-    /* Handle %o */
-    unsigned int num = va_arg(args, unsigned int);
-    /* Convert num to octal and print it */
-    /* Increment printed_chars accordingly */
-}
-else if (*format == 'x' || *format == 'X')
-{
-    /* Handle %x and %X */
-    unsigned int num = va_arg(args, unsigned int);
-    /* Convert num to hexadecimal (lowercase or uppercase) and print it */
-    /* Increment printed_chars accordingly */
-}
-/* Define a local buffer of 1024 chars for efficient writing */
-char buffer[1024];
-int buffer_index = 0;
-
-else if (*format == 'p')
-{
-    /* Handle %p */
-    void *ptr = va_arg(args, void *);
-    /* Print the pointer address in hexadecimal format */
-    /* Increment printed_chars accordingly */
-}
-else if (*format == 'R')
-{
-    /* Handle %R */
-    char *str = va_arg(args, char *);
-    if (str == NULL)
-    {
-        /* Handle NULL string */
-        /* Print (null) and increment printed_chars */
-    }
-    else
-    {
-        /* Apply ROT13 transformation to the string str and print it */
-        /* Increment printed_chars accordingly */
-    }
-}
 
     va_end(args);
 
     return printed_chars;
 }
+
