@@ -12,7 +12,7 @@ int _printf(const char *format, ...)
 {
     int printed_chars = 0;
     va_list args;
-
+char buffer[1024];
     va_start(args, format);
 
     while (*format)
