@@ -1,88 +1,62 @@
-#include <stdio.h>
-#include <stdarg.h>
 #include <unistd.h>
 #include "main.h"
+#include <stdarg.h>
 
 /**
- * _printf - Print formatted text to stdout.
- * @format: A pointer to the format string.
- * @...: Optional arguments for the format string.
+ * _printf - Custom printf function.
+ * @format: The format string.
  *
  * Return: The number of characters printed (excluding the null byte).
  */
 int _printf(const char *format, ...)
 {
-	va_list args;        /* Stores the variable arguments */
-	int count = 0;       /* Keeps track of the character count */
-	const char *c = format; /* Pointer to the format string */
-	char buffer[1024];    /* Local buffer for output */
+	int count = 0;
+	va_list args;
 
-	va_start(args, format); /* Initialize the variable arguments */
-
-	while (*c)
+	if (format)
 	{
-		if (*c == '%')
+		va_start(args, format);
+		while (*format)
 		{
-			c++;
-
-			/* Initialize flags to zero */
-			int plus_flag = 0;
-			int space_flag = 0;
-			int hash_flag = 0;
-
-			/* Check for flags */
-			while (*c == '+' || *c == ' ' || *c == '#')
+			if (*format == '%')
 			{
-				if (*c == '+')
-					plus_flag = 1;
-				else if (*c == ' ')
-					space_flag = 1;
-				else if (*c == '#')
-					hash_flag = 1;
-				c++;
+				format++;
+				if (*format == '\0')
+					break;
+				else if (*format == 'c')
+					count += _putchar(va_arg(args, int));
+				else if (*format == 's')
+					count += print_string(va_arg(args, char *));
+				else if (*format == '%')
+					count += _putchar('%');
 			}
-
-			if (*c == 'd' || *c == 'i')
+			else
 			{
-				/* Handle d and i with flags */
-				int num = va_arg(args, int);
-				char format_str[8] = "%";
-				if (plus_flag)
-					strcat(format_str, "+");
-				if (space_flag)
-					strcat(format_str, " ");
-				if (hash_flag)
-					strcat(format_str, "#");
-				strcat(format_str, "d");
-				int n = snprintf(buffer + count, sizeof(buffer) - count, format_str, num);
-				if (n < 0)
-					return -1; /* Handle error */
-				count += n;
+				count += _putchar(*format);
 			}
-			/* Handle other conversion specifiers similarly */
+			format++;
 		}
-		else
-		{
-			buffer[count] = *c;
-			count++;
-		}
-
-		if (count >= sizeof(buffer) - 1)
-		{
-			buffer[count] = '\0';
-			write(1, buffer, count);
-			count = 0;
-		}
-
-		c++;
+		va_end(args);
 	}
+	return (count);
+}
 
-	if (count > 0)
+/**
+ * print_string - Print a string.
+ * @str: The string to print.
+ *
+ * Return: The number of characters printed.
+ */
+int print_string(char *str)
+{
+	int count = 0;
+	if (str)
 	{
-		buffer[count] = '\0';
-		write(1, buffer, count);
+		while (*str)
+		{
+			count += _putchar(*str);
+			str++;
+		}
 	}
-
-	va_end(args);
-	return count;
+	return (count);
 }
