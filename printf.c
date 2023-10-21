@@ -1,63 +1,115 @@
+#include <stdarg.h>
+#include <unistd.h>
+#include <stdio.h>
 #include "main.h"
 
-/**
- * print_buffer - Prints the contents of the buffer.
- * @buffer: Array of chars to be printed.
- * @buff_ind: Pointer to the buffer index, represents the length.
- */
-void print_buffer(char buffer[], int *buff_ind)
-{
-	if (*buff_ind > 0)
-	{
-		write(1, &buffer[0], *buff_ind);
-	}
-
-	*buff_ind = 0;
-}
-
-/**
- * _printf - Printf function
- * @format: The format string to be printed.
- * Return: The total number of characters printed.
- */
 int _printf(const char *format, ...)
 {
-	int i, printed = 0, printed_chars = 0;
-	int flags, width, precision, size, buff_ind = 0;
-	va_list list;
-	char buffer[BUFF_SIZE];
+    int printed_chars = 0;
+    va_list args;
 
-	if (format == NULL)
-		return (-1);
+    /* Implement handling of %c, %s, and %% here */
 
-	va_start(list, format);
+    va_start(args, format);
 
-	for (i = 0; format && format[i] != '\0'; i++)
-	{
-		if (format[i] != '%')
-		{
-			buffer[buff_ind++] = format[i];
-			if (buff_ind == BUFF_SIZE)
-				print_buffer(buffer, &buff_ind);
-			printed_chars++;
-		}
-		else
-		{
-			print_buffer(buffer, &buff_ind);
-			flags = get_flags(format, &i);
-			width = get_width(format, &i, list);
-			precision = get_precision(format, &i, list);
-			size = get_size(format, &i);
-			i++;
-			printed = handle_print(format, &i, list, buffer,
-				flags, width, precision, size);
-			if (printed == -1)
-				return (-1);
-			printed_chars += printed;
-		}
-	}
+    /* Loop through the format string and handle conversions */
+    while (*format)
+    {
+        if (*format == '%')
+        {
+            format++; /* Move to the next character */
+            if (*format == '\0') /* Handle format string ending with '%' */
+                break;
+            if (*format == 'c')
+            {
+                /* Handle %c */
+                char c = va_arg(args, int);
+                /* Print the character c here */
+                /* Increment printed_chars accordingly */
+            }
+            else if (*format == 's')
+            {
+                /* Handle %s */
+                char *str = va_arg(args, char *);
+                if (str == NULL)
+                {
+                    /* Handle NULL string */
+                    /* Print (null) and increment printed_chars */
+                }
+                else
+                {
+                    /* Print the string str and increment printed_chars */
+                }
+            }
+            else if (*format == '%')
+            {
+                /* Handle %% */
+                /* Print % and increment printed_chars */
+            }
+            /* Handle other conversion specifiers as needed */
+        }
+        else
+        {
+            /* Handle regular characters */
+            /* Print the character and increment printed_chars */
+        }
+        format++; /* Move to the next character in the format string */
+    }
+    else if (*format == 'b')
+{
+    /* Handle %b */
+    unsigned int num = va_arg(args, unsigned int);
+    /* Convert num to binary and print it */
+    /* Increment printed_chars accordingly */
+}
+else if (*format == 'u')
+{
+    /* Handle %u */
+    unsigned int num = va_arg(args, unsigned int);
+    /* Print the unsigned integer num and increment printed_chars */
+}
+else if (*format == 'o')
+{
+    /* Handle %o */
+    unsigned int num = va_arg(args, unsigned int);
+    /* Convert num to octal and print it */
+    /* Increment printed_chars accordingly */
+}
+else if (*format == 'x' || *format == 'X')
+{
+    /* Handle %x and %X */
+    unsigned int num = va_arg(args, unsigned int);
+    /* Convert num to hexadecimal (lowercase or uppercase) and print it */
+    /* Increment printed_chars accordingly */
+}
+/* Define a local buffer of 1024 chars for efficient writing */
+char buffer[1024];
+int buffer_index = 0;
 
-	print_buffer(buffer, &buff_ind);
-	va_end(list);
-	return (printed_chars);
+else if (*format == 'p')
+{
+    /* Handle %p */
+    void *ptr = va_arg(args, void *);
+    /* Print the pointer address in hexadecimal format */
+    /* Increment printed_chars accordingly */
+}
+else if (*format == 'R')
+{
+    /* Handle %R */
+    char *str = va_arg(args, char *);
+    if (str == NULL)
+    {
+        /* Handle NULL string */
+        /* Print (null) and increment printed_chars */
+    }
+    else
+    {
+        /* Apply ROT13 transformation to the string str and print it */
+        /* Increment printed_chars accordingly */
+    }
+}
+
+    va_end(args);
+
+    return printed_chars;
 }
