@@ -82,25 +82,6 @@ int _printf(const char *format, ...)
                         write(1, &buffer[--count], 1);
                         printed_chars++;
                     }
-
-		     else if (*format == 'b')
-            {
-                unsigned int num = va_arg(args, unsigned int);
-                char binary[32]; // Maximum bits for a 32-bit integer
-                int i = 0;
-
-                while (i < 32)
-                {
-                    binary[i] = (num & 1) + '0';
-                    num >>= 1;
-                    i++;
-                }
-
-                while (i > 0)
-                {
-                    write(1, &binary[--i], 1);
-                    printed_chars++;
-		}
                 }
             }
         }
@@ -109,10 +90,29 @@ int _printf(const char *format, ...)
             write(1, format, 1);
             printed_chars++;
         }
+
+	else
+        {
+            buffer[printed_chars] = *format;
+            printed_chars++;
+        }
+
+        if (printed_chars == 1024) /* Flush the buffer */
+        {
+            write(1, buffer, 1024);
+            printed_chars = 0;
+        }
+
+
         format++;
     }
 
     va_end(args);
+
+    if (printed_chars > 0)
+    {
+        write(1, buffer, printed_chars);
+    }
 
     return printed_chars;
 }
