@@ -1,16 +1,15 @@
-#include <stdio.h>
 #include <stdarg.h>
 #include <unistd.h>
-#include "main.h"
+#include <stdio.h>
 
 #define BUFFER_SIZE 1024
 
 /**
- * _printf - Custom printf implementation with various format specifiers.
- * @format: The format string.
- * @...: Additional arguments for format specifiers.
+ * _printf - Custom printf implementation with various format specifiers
+ * @format: The format string
+ * @...: Additional arguments for format specifiers
  *
- * Return: Number of characters printed (excluding the null byte).
+ * Return: Number of characters printed (excluding the null byte)
  */
 int _printf(const char *format, ...) {
     va_list args;
@@ -18,9 +17,6 @@ int _printf(const char *format, ...) {
     int chars_printed = 0;
     char buffer[BUFFER_SIZE];
     int buffer_index = 0;
-    const char *str = va_arg(args, const char *);
-    int num = va_arg(args, int);
-    int printed_chars = snprintf(&buffer[buffer_index], BUFFER_SIZE - buffer_index, "%d", num);
 
     char c;
 
@@ -36,7 +32,7 @@ int _printf(const char *format, ...) {
                     chars_printed++;
                     break;
                 case 's': {
-                  
+                    const char *str = va_arg(args, const char *);
                     while (*str) {
                         buffer[buffer_index++] = *str++;
                         chars_printed++;
@@ -48,64 +44,62 @@ int _printf(const char *format, ...) {
                     chars_printed++;
                     break;
                 case 'd':
-                case 'i':
-{
-                     
-    if (printed_chars > 0) {
-        buffer_index += printed_chars;
-        chars_printed += printed_chars;
-}
-                    
+                case 'i': {
+                    int num = va_arg(args, int);
+                    int printed_chars = snprintf(&buffer[buffer_index], BUFFER_SIZE - buffer_index, "%d", num);
+                    if (printed_chars > 0) {
+                        buffer_index += printed_chars;
+                        chars_printed += printed_chars;
+                    }
                     break;
-                case 'u':
-                    {
-    unsigned int num = va_arg(args, unsigned int);
-    int printed_chars = snprintf(&buffer[buffer_index], BUFFER_SIZE - buffer_index, "%u", num);
-    if (printed_chars > 0) {
-        buffer_index += printed_chars;
-        chars_printed += printed_chars;
-    }
+                }
+                case 'u': {
+                    unsigned int num = va_arg(args, unsigned int);
+                    int printed_chars = snprintf(&buffer[buffer_index], BUFFER_SIZE - buffer_index, "%u", num);
+                    if (printed_chars > 0) {
+                        buffer_index += printed_chars;
+                        chars_printed += printed_chars;
+                    }
                     break;
-                case 'o':
-                   {
-    unsigned int num = va_arg(args, unsigned int);
-    int printed_chars = snprintf(&buffer[buffer_index], BUFFER_SIZE - buffer_index, "%o", num);
-    if (printed_chars > 0) {
-        buffer_index += printed_chars;
-        chars_printed += printed_chars;
-    }
+                }
+                case 'o': {
+                    unsigned int num = va_arg(args, unsigned int);
+                    int printed_chars = snprintf(&buffer[buffer_index], BUFFER_SIZE - buffer_index, "%o", num);
+                    if (printed_chars > 0) {
+                        buffer_index += printed_chars;
+                        chars_printed += printed_chars;
+                    }
                     break;
+                }
                 case 'x':
-                case 'X':
-                    {
-    unsigned int num = va_arg(args, unsigned int);
-    /* Use 'x' for lowercase and 'X' for uppercase hexadecimal representation */
-    int printed_chars = snprintf(&buffer[buffer_index], BUFFER_SIZE - buffer_index, c == 'x' ? "%x" : "%X", num);
-    if (printed_chars > 0) {
-        buffer_index += printed_chars;
-        chars_printed += printed_chars;
-    }
+                case 'X': {
+                    unsigned int num = va_arg(args, unsigned int);
+                    int printed_chars = snprintf(&buffer[buffer_index], BUFFER_SIZE - buffer_index, c == 'x' ? "%x" : "%X", num);
+                    if (printed_chars > 0) {
+                        buffer_index += printed_chars;
+                        chars_printed += printed_chars;
+                    }
                     break;
-                case 'p':
-                    {
-    void *ptr = va_arg(args, void *);
-    int printed_chars = snprintf(&buffer[buffer_index], BUFFER_SIZE - buffer_index, "%p", ptr);
-    if (printed_chars > 0) {
-        buffer_index += printed_chars;
-        chars_printed += printed_chars;
-    }
+                }
+                case 'p': {
+                    void *ptr = va_arg(args, void *);
+                    int printed_chars = snprintf(&buffer[buffer_index], BUFFER_SIZE - buffer_index, "%p", ptr);
+                    if (printed_chars > 0) {
+                        buffer_index += printed_chars;
+                        chars_printed += printed_chars;
+                    }
                     break;
+                }
                 case 'e':
-                case 'E':
-                   {
-    double num = va_arg(args, double);
-    /* Use 'e' for lowercase and 'E' for uppercase scientific notation representation */
-    int printed_chars = snprintf(&buffer[buffer_index], BUFFER_SIZE - buffer_index, c == 'e' ? "%e" : "%E", num);
-    if (printed_chars > 0) {
-        buffer_index += printed_chars;
-        chars_printed += printed_chars;
-    }
+                case 'E': {
+                    double num = va_arg(args, double);
+                    int printed_chars = snprintf(&buffer[buffer_index], BUFFER_SIZE - buffer_index, c == 'e' ? "%e" : "%E", num);
+                    if (printed_chars > 0) {
+                        buffer_index += printed_chars;
+                        chars_printed += printed_chars;
+                    }
                     break;
+                }
                 /* Add support for more format specifiers as needed */
                 default:
                     /* Unsupported format specifier, ignore it. */
@@ -122,9 +116,7 @@ int _printf(const char *format, ...) {
     if (buffer_index > 0) {
         write(STDOUT_FILENO, buffer, buffer_index);
     }
-    format++;
 
     va_end(args);
     return chars_printed;
-return -;
-		   }
+}
