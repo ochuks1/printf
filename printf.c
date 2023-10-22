@@ -13,13 +13,12 @@
  */
 int _printf(const char *format, ...) {
     va_list args;
-    va_start(args, format);
     int chars_printed = 0;
     char buffer[BUFFER_SIZE];
     int buffer_index = 0;
 
     char c;
-
+ va_start(args, format);
     while ((c = *format++) != '\0') {
         if (c != '%') {
             buffer[buffer_index++] = c;
@@ -37,8 +36,8 @@ int _printf(const char *format, ...) {
                         buffer[buffer_index++] = *str++;
                         chars_printed++;
                     }
-                    break;
-                }
+                    break; 
+	            }
                 case '%':
                     buffer[buffer_index++] = '%';
                     chars_printed++;
@@ -101,22 +100,25 @@ int _printf(const char *format, ...) {
                     break;
                 }
                 /* Add support for more format specifiers as needed */
+		   
                 default:
                     /* Unsupported format specifier, ignore it. */
                     break;
             }
         }
 
-        if (buffer_index >= BUFFER_SIZE) {
+        if (buffer_index >= BUFFER_SIZE)
+	{
             write(STDOUT_FILENO, buffer, buffer_index);
             buffer_index = 0;
         }
     }
 
-    if (buffer_index > 0) {
+    if (buffer_index > 0)
+    {
         write(STDOUT_FILENO, buffer, buffer_index);
     }
 
     va_end(args);
-    return chars_printed;
+    return (chars_printed);
 }
