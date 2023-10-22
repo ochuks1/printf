@@ -10,6 +10,12 @@ int _printf(const char *format, ...)
     char buffer[BUFFER_SIZE];
     int count = 0;
     int i = 0;
+    int print_char(va_list args);
+    int print_string(va_list args);
+    int print_integer(va_list args);
+    int print_binary(va_list args);
+    int print_unsigned(va_list args, char format);
+    int print_str_non_printable(va_list args);
 
     va_start(args, format);
     while (format && *format)
@@ -20,7 +26,8 @@ int _printf(const char *format, ...)
             if (*format == '\0')
                 return (-1);
 
-            if (*format == 'c')
+            
+	    if (*format == 'c')
                 count += print_char(args);
             else if (*format == 's')
                 count += print_string(args);
