@@ -1,10 +1,13 @@
 #include <stdio.h>
 #include <stdarg.h>
+#include "main.h"
+
 
 int _printf(const char *format, ...)
 {
 int printed_chars = 0;
 va_list args;
+
 va_start(args, format);
 while (*format)
 {
