@@ -1,158 +1,130 @@
-#include "main.h"
+#include <stdio.h>
 #include <stdarg.h>
 #include <unistd.h>
-#include <stdio.h>
-
+#include "main.h"
 
 #define BUFFER_SIZE 1024
 
-int _printf(const char *format, ...)
-{
+/**
+ * _printf - Custom printf implementation with various format specifiers.
+ * @format: The format string.
+ * @...: Additional arguments for format specifiers.
+ *
+ * Return: Number of characters printed (excluding the null byte).
+ */
+int _printf(const char *format, ...) {
     va_list args;
-    char buffer[BUFFER_SIZE];
-    int count = 0;
-    int i = 0;
-    int print_char(va_list args);
-    int print_string(va_list args);
-    int print_integer(va_list args);
-    int print_binary(va_list args);
-    int print_unsigned(va_list args, char format);
-    int print_str_non_printable(va_list args);
-    void itoa_hex(unsigned int n, char* buffer, char format);
-    void itoa_octal(unsigned int n, char* buffer);
-    void itoa_unsigned(unsigned int n, char* buffer);
-    int print_string(va_list args, int precision);
-     char *str = va_arg(args, char *);
-    int printed = 0;
-    int print_integer(va_list args, char format, int is_positive, int width);
-    int print_integer(va_list args, char format, int is_positive);
-    int n = va_arg(args, int);
-    char buffer[12];
-    itoa(n, buffer, is_positive);
-
-
-
     va_start(args, format);
-    while (format && *format)
-    {
-        if (*format == '%')
-        {
-            format++;
-            if (*format == '\0')
-                return (-1);
+    int chars_printed = 0;
+    char buffer[BUFFER_SIZE];
+    int buffer_index = 0;
+    const char *str = va_arg(args, const char *);
+    int num = va_arg(args, int);
+    int printed_chars = snprintf(&buffer[buffer_index], BUFFER_SIZE - buffer_index, "%d", num);
 
-	    if (precision >= 0)
-    {
-        int len = _strlen(str);
-        if (len > precision)
-        {
-            str = _strndup(str, precision);
-        }
+    char c;
+
+    while ((c = *format++) != '\0') {
+        if (c != '%') {
+            buffer[buffer_index++] = c;
+            chars_printed++;
+        } else {
+            c = *format++;
+            switch (c) {
+                case 'c':
+                    buffer[buffer_index++] = va_arg(args, int);
+                    chars_printed++;
+                    break;
+                case 's': {
+                  
+                    while (*str) {
+                        buffer[buffer_index++] = *str++;
+                        chars_printed++;
+                    }
+                    break;
+                }
+                case '%':
+                    buffer[buffer_index++] = '%';
+                    chars_printed++;
+                    break;
+                case 'd':
+                case 'i':
+{
+                     
+    if (printed_chars > 0) {
+        buffer_index += printed_chars;
+        chars_printed += printed_chars;
+}
+                    
+                    break;
+                case 'u':
+                    {
+    unsigned int num = va_arg(args, unsigned int);
+    int printed_chars = snprintf(&buffer[buffer_index], BUFFER_SIZE - buffer_index, "%u", num);
+    if (printed_chars > 0) {
+        buffer_index += printed_chars;
+        chars_printed += printed_chars;
     }
-
-    printed += _puts(str);
-    return (printed);
-
-     if (format == '+' && n >= 0)
-    {
-        printed += _putchar('+');
+                    break;
+                case 'o':
+                   {
+    unsigned int num = va_arg(args, unsigned int);
+    int printed_chars = snprintf(&buffer[buffer_index], BUFFER_SIZE - buffer_index, "%o", num);
+    if (printed_chars > 0) {
+        buffer_index += printed_chars;
+        chars_printed += printed_chars;
     }
-    else if (format == ' ' && n >= 0)
-    {
-        printed += _putchar(' ');
+                    break;
+                case 'x':
+                case 'X':
+                    {
+    unsigned int num = va_arg(args, unsigned int);
+    /* Use 'x' for lowercase and 'X' for uppercase hexadecimal representation */
+    int printed_chars = snprintf(&buffer[buffer_index], BUFFER_SIZE - buffer_index, c == 'x' ? "%x" : "%X", num);
+    if (printed_chars > 0) {
+        buffer_index += printed_chars;
+        chars_printed += printed_chars;
     }
-
-    printed += _puts(buffer);
-    return (printed);
-
-     itoa(n, buffer, is_positive);
-    int printed = 0;
-
-    if (format == '+' && n >= 0)
-    {
-        printed += _putchar('+');
-        width--;
+                    break;
+                case 'p':
+                    {
+    void *ptr = va_arg(args, void *);
+    int printed_chars = snprintf(&buffer[buffer_index], BUFFER_SIZE - buffer_index, "%p", ptr);
+    if (printed_chars > 0) {
+        buffer_index += printed_chars;
+        chars_printed += printed_chars;
     }
-    else if (format == ' ' && n >= 0)
-    {
-        printed += _putchar(' ');
-        width--;
+                    break;
+                case 'e':
+                case 'E':
+                   {
+    double num = va_arg(args, double);
+    /* Use 'e' for lowercase and 'E' for uppercase scientific notation representation */
+    int printed_chars = snprintf(&buffer[buffer_index], BUFFER_SIZE - buffer_index, c == 'e' ? "%e" : "%E", num);
+    if (printed_chars > 0) {
+        buffer_index += printed_chars;
+        chars_printed += printed_chars;
     }
-
-    while (width > 0)
-    {
-        printed += _putchar(' ');
-        width--;
-    }
-
-    printed += _puts(buffer);
-    return (printed);
-
-            
-	    if (*format == 'c')
-                count += print_char(args);
-            else if (*format == 's')
-                count += print_string(args);
-            else if (*format == '%')
-            {
-                write(1, "%", 1);
-                count++;
+                    break;
+                /* Add support for more format specifiers as needed */
+                default:
+                    /* Unsupported format specifier, ignore it. */
+                    break;
             }
-            else if (*format == 'd' || *format == 'i')
-                count += print_integer(args);
-            else if (*format == 'b')
-                count += print_binary(args);
-            else if (*format == 'u' || *format == 'o' || *format == 'x' || *format == 'X')
-                count += print_unsigned(args, *format);
-            else if (*format == 'S')
-                count += print_str_non_printable(args);
-        }
-        else
-        {
-            if (i == BUFFER_SIZE - 1)
-            {
-                write(1, buffer, i);
-                i = 0;
-            }
-            buffer[i] = *format;
-            count++;
-            i++;
-
-	     while (format && format[i])
-    {
-        if (format[i] != '%')
-        {
-            putchar(format[i]);
-            count++;
         }
 
-	    else
-        {
-            i++;
-    
+        if (buffer_index >= BUFFER_SIZE) {
+            write(STDOUT_FILENO, buffer, buffer_index);
+            buffer_index = 0;
         }
-
-	    else if (format[i] == 'u')
-{
-    count += print_unsigned(va_arg(args, unsigned int));
-}
-else if (format[i] == 'o')
-{
-    count += print_octal(va_arg(args, unsigned int));
-}
-else if (format[i] == 'x' || format[i] == 'X')
-{
-    count += print_hex(va_arg(args, unsigned int), format[i]);
-}
-
-
-        format++;
     }
-    if (i > 0)
-        write(1, buffer, i);
+
+    if (buffer_index > 0) {
+        write(STDOUT_FILENO, buffer, buffer_index);
+    }
+    format++;
 
     va_end(args);
-    return count;
-return -1;
-
-}
+    return chars_printed;
+return -;
+		   }
