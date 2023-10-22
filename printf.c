@@ -52,12 +52,14 @@ int _printf(const char *format, ...)
             else if (*format == 'd' || *format == 'i')
             {
                 int num = va_arg(args, int);
+		printf("The value of num is %d\n", num);
                 /* Handling for %d and %i (Task 1) */
                 
             }
             else if (*format == 'b')
             {
                 unsigned int num = va_arg(args, unsigned int);
+		printf("The value of num is %u\n", num);
                 /* Handling for %b (Task 2) */
             }
         }
