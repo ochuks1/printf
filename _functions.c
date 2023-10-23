@@ -3,40 +3,6 @@
 #include <stdint.h>
 #include <stdio.h>
 
-/**
-* print_char - Print a character
-* @args: List of arguments
-*
-* Return: Number of characters printed
-*/
-int print_char(va_list args)
-{
-char c = va_arg(args, int);
-write(1, &c, 1);
-return (1);
-}
-
-/**
-* print_string - Print a string
-* @args: List of arguments
-*
-* Return: Number of characters printed
-*/
-int print_string(va_list args)
-{
-char *str = va_arg(args, char *);
-int count = 0;
-if (str)
-{
-while (*str)
-{
-write(1, str, 1);
-count++;
-str++;
-}
-}
-return (count);
-}
 
 /**
 * print_integer - Print an integer
@@ -51,38 +17,6 @@ int print_integer(va_list args)
     int count = snprintf(buf, sizeof(buf), "%d", n);
     write(1, buf, count);
     return (count);
-}
-
-/**
- * print_binary - Print an unsigned integer in binary format
- * @args: List of arguments
- *
- * Return: Number of characters printed
- */
-int print_binary(va_list args)
-{
-    unsigned int num = va_arg(args, unsigned int);
-    char buf[33]; /* 32 binary digits + NULL terminator */
-    int i, count = 0;
-
-    if (num == 0)
-    {
- write(1, "0", 1);
-        return (1);
-    }
-
-    for (i = 31; i >= 0; i--)
-    {
-        buf[i] = (num & 1) + '0';
-        num >>= 1;
-    }
-
-    buf[32] = '\0';
-    while (buf[count] == '0')
-        count++;
-
-    write(1, &buf[count], 32 - count);
-    return (32 - count);
 }
 
 /**
