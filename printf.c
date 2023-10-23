@@ -35,7 +35,8 @@ i++; /* Move past the '%' */
 
 if (format[i] == '\0')
 {
-break; /* Format string ends with a '%', so we break. */
+break;
+/* Format string ends with a '%', so we break. */
 }
 if (format[i] == 'c')
 {
@@ -82,8 +83,10 @@ char_count += sprintf(buffer + char_count, "%o", num);
 }
 else if (format[i] == 'x' || format[i] == 'X')
 {
-unsigned int num = va_arg(args, unsigned int);
-char_count += sprintf(buffer + char_count, format[i] == 'x' ? "%x" : "%X", num);
+unsigned int num = va_arg(args,
+unsigned int);
+char_count += sprintf(buffer + char_count,
+format[i] == 'x' ? "%x" : "%X", num);
 }
 else if (format[i] == 'S')
 {
@@ -122,6 +125,6 @@ write(1, buffer, char_count);
 va_end(args);
 return (char_count);
 {
-return -1;
+return (-1);
 }
 }
