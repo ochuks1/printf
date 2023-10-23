@@ -8,5 +8,6 @@
 #define BUFFER_SIZE 1024
 
 int _printf(const char *format, ...);
+int main(void);
 
 #endif /* MAIN_H */

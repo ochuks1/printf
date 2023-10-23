@@ -4,53 +4,53 @@
 #include <stdio.h>
 
 /**
- * print_char - Print a character
- * @args: List of arguments
- *
- * Return: Number of characters printed
- */
+* print_char - Print a character
+* @args: List of arguments
+*
+* Return: Number of characters printed
+*/
 int print_char(va_list args)
 {
-    char c = va_arg(args, int);
-    write(1, &c, 1);
-    return 1;
+char c = va_arg(args, int);
+write(1, &c, 1);
+return (1);
 }
 
 /**
- * print_string - Print a string
- * @args: List of arguments
- *
- * Return: Number of characters printed
- */
+* print_string - Print a string
+* @args: List of arguments
+*
+* Return: Number of characters printed
+*/
 int print_string(va_list args)
 {
-    char *str = va_arg(args, char *);
-    int count = 0;
-    if (str)
-    {
-        while (*str)
-        {
-            write(1, str, 1);
-            count++;
-            str++;
-        }
-    }
-    return count;
+char *str = va_arg(args, char *);
+int count = 0;
+if (str)
+{
+while (*str)
+{
+write(1, str, 1);
+count++;
+str++;
+}
+}
+return (count);
 }
 
 /**
- * print_integer - Print an integer
- * @args: List of arguments
- *
- * Return: Number of characters printed
- */
+* print_integer - Print an integer
+* @args: List of arguments
+*
+* Return: Number of characters printed
+*/
 int print_integer(va_list args)
 {
     int n = va_arg(args, int);
     char buf[12]; /* Sufficient for 32-bit integers */
     int count = snprintf(buf, sizeof(buf), "%d", n);
     write(1, buf, count);
-    return count;
+    return (count);
 }
 
 /**
@@ -67,8 +67,8 @@ int print_binary(va_list args)
 
     if (num == 0)
     {
-        write(1, "0", 1);
-        return 1;
+ write(1, "0", 1);
+        return (1);
     }
 
     for (i = 31; i >= 0; i--)
@@ -82,7 +82,7 @@ int print_binary(va_list args)
         count++;
 
     write(1, &buf[count], 32 - count);
-    return 32 - count;
+    return (32 - count);
 }
 
 /**
@@ -97,7 +97,7 @@ int print_unsigned(va_list args)
     char buf[12]; /* Sufficient for 32-bit unsigned integers */
     int count = snprintf(buf, sizeof(buf), "%u", num);
     write(1, buf, count);
-    return count;
+    return (count);
 }
 
 /**
@@ -105,14 +105,14 @@ int print_unsigned(va_list args)
  * @args: List of arguments
  *
  * Return: Number of characters printed
- */
+*/
 int print_octal(va_list args)
 {
     unsigned int num = va_arg(args, unsigned int);
     char buf[12]; /* Sufficient for 32-bit integers */
     int count = snprintf(buf, sizeof(buf), "%o", num);
     write(1, buf, count);
-    return count;
+    return (count);
 }
 
 /**
@@ -133,39 +133,40 @@ int print_hex(va_list args, int uppercase)
     else
         count = snprintf(buf, sizeof(buf), "%x", num);
 
-    write(1, buf, count);
-    return count;
-}
+write(1, buf, count);
+return (count);
+} 
 
 /**
- * print_str_non_printable - Print a string with non-printable characters
- * @args: List of arguments
- *
- * Return: Number of characters printed
- */
+* print_str_non_printable - Print a string with non-printable characters
+* @args: List of arguments
+*
+* Return: Number of characters printed
+*/
 int print_str_non_printable(va_list args)
 {
-    char *str = va_arg(args, char *);
-    int count = 0;
+char *str = va_arg(args, char *);
+int count = 0;
 
-    if (str)
-    {
-        while (*str)
-        {
-            if (*str < 32 || *str >= 127)
-            {
-                char hex[5]; /* "\x00" + NULL terminator */
-                snprintf(hex, sizeof(hex), "\\x%02X", (unsigned char)(*str));
-                write(1, hex, 4);
-                count += 4;
-            }
-            else
-            {
-                write(1, str, 1);
-                count++;
-            }
-            str++;
-        }
-    }
-    return count;
+if (str)
+{
+while (*str)
+{
+if (*str < 32 || *str >= 127)
+{
+char hex[5];
+/* "\x00" + NULL terminator */
+snprintf(hex, sizeof(hex), "\\x%02X", (unsigned char)(*str));
+write(1, hex, 4);
+count += 4;
+}
+else
+{
+write(1, str, 1);
+count++;
+}
+str++;
+}
+}
+return (count);
 }
