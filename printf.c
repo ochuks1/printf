@@ -125,6 +125,6 @@ write(1, buffer, char_count);
 va_end(args);
 return (char_count);
 {
-return (-1);
+return (0);
 }
 }

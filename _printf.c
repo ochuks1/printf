@@ -12,16 +12,3 @@ print_binary(n / 2);
 }
 putchar('0' + n % 2);
 }
-/**
-* main - Entry point of the program.
-*
-* Return: 0 (Success).
-*/
-int main(void)
-{
-unsigned int value = 42;
-printf("Binary representation: ");
-print_binary(value);
-printf("\n");
-return (0);
-}
